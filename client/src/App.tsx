@@ -2,43 +2,45 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer";
-import Home from "@/pages/Home";
-import Team from "@/pages/Team";
-import Schedule from "@/pages/Schedule";
-import News from "@/pages/News";
-import NewsDetail from "@/pages/NewsDetail";
-import Shop from "@/pages/Shop";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import Home from "@/pages/home";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/team" component={Team} />
-      <Route path="/schedule" component={Schedule} />
-      <Route path="/news" component={News} />
-      <Route path="/news/:id" component={NewsDetail} />
-      <Route path="/shop" component={Shop} />
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-function App() {
+export default function App() {
+  const style = {
+    "--sidebar-width": "18rem",
+    "--sidebar-width-icon": "4rem",
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex flex-col min-h-screen bg-background font-body text-foreground selection:bg-primary selection:text-white">
-        <Navbar />
-        <main className="flex-grow">
-          <Router />
-        </main>
-        <Footer />
+      <TooltipProvider>
+        <SidebarProvider style={style as React.CSSProperties}>
+          <div className="flex h-screen w-full overflow-hidden">
+            <AppSidebar />
+            <div className="flex flex-col flex-1 min-w-0">
+              <header className="flex items-center justify-between p-4 border-b bg-background/80 backdrop-blur-sm sticky top-0 z-50">
+                <SidebarTrigger data-testid="button-sidebar-toggle" />
+              </header>
+              <main className="flex-1 overflow-y-auto">
+                <Router />
+              </main>
+            </div>
+          </div>
+        </SidebarProvider>
         <Toaster />
-      </div>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }
-
-export default App;
