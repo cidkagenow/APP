@@ -18,7 +18,7 @@ export async function registerRoutes(
     res.json(news);
   });
 
-  await seedDatabase();
+  // await seedDatabase();
 
   return httpServer;
 }
