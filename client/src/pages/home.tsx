@@ -1,22 +1,75 @@
-import { useQuery } from "@tanstack/react-query";
-import { type Match, type NewsItem } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 
-export default function Home() {
-  const { data: matches, isLoading: loadingMatches } = useQuery<Match[]>({ 
-    queryKey: ["/api/matches"] 
-  });
-  
-  const { data: news, isLoading: loadingNews } = useQuery<NewsItem[]>({ 
-    queryKey: ["/api/news"] 
-  });
+// Mock Data
+const MOCK_MATCHES = [
+  {
+    id: 1,
+    opponentName: "Chelsea",
+    opponentLogoUrl: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg",
+    isHome: false,
+    date: "2026-01-12T15:00:00Z",
+    stadium: "Build-Abri Stadium",
+    homeScore: 1,
+    awayScore: 5,
+    attendance: "12 500",
+    isFinished: true,
+  },
+  {
+    id: 2,
+    opponentName: "Arsenal",
+    opponentLogoUrl: "https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg",
+    isHome: true,
+    date: "2026-01-15T19:45:00Z",
+    stadium: "Kassam Stadium",
+    homeScore: 2,
+    awayScore: 1,
+    attendance: "11 200",
+    isFinished: true,
+  }
+];
 
-  const recentMatches = matches?.filter(m => m.isFinished).slice(0, 2) || [];
-  const upcomingMatches = matches?.filter(m => !m.isFinished).slice(0, 2) || [];
+const MOCK_UPCOMING = [
+  {
+    id: 3,
+    opponentName: "Chelsea",
+    opponentLogoUrl: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg",
+    isHome: false,
+    date: "2026-12-12T17:30:00Z",
+    stadium: "Build-Abri Stadium",
+    isFinished: false,
+  }
+];
+
+const MOCK_NEWS = [
+  {
+    id: 1,
+    title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    summary: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    imageUrl: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=600&h=400&fit=crop",
+  },
+  {
+    id: 2,
+    title: "New signing announced for the upcoming season",
+    summary: "The club is delighted to announce the arrival of a new star player to bolster the squad.",
+    imageUrl: "https://images.unsplash.com/photo-1511886929837-354d827aae26?q=80&w=600&h=400&fit=crop",
+  },
+  {
+    id: 3,
+    title: "Stadium expansion plans revealed",
+    summary: "Detailed plans for the expansion of the Kassam Stadium have been unveiled to the public.",
+    imageUrl: "https://images.unsplash.com/photo-1522778119026-d647f0596c20?q=80&w=600&h=400&fit=crop",
+  }
+];
+
+export default function Home() {
+  const loadingMatches = false;
+  const loadingNews = false;
+  const recentMatches = MOCK_MATCHES;
+  const upcomingMatches = MOCK_UPCOMING;
+  const news = MOCK_NEWS;
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -59,10 +112,7 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {loadingMatches ? (
-              [1, 2].map(i => <Skeleton key={i} className="h-48 w-full rounded-xl" />)
-            ) : (
-              recentMatches.map(match => (
+            {recentMatches.map(match => (
                 <Card key={match.id} className="overflow-hidden border-none shadow-xl hover-elevate bg-zinc-50 dark:bg-zinc-800/50 group">
                   <CardContent className="p-8 flex items-center justify-between">
                     <div className="text-center flex-1">
@@ -92,8 +142,7 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
-              ))
-            )}
+              ))}
           </div>
         </div>
       </section>
@@ -109,10 +158,7 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {loadingNews ? (
-              [1, 2, 3].map(i => <Skeleton key={i} className="h-64 w-full bg-zinc-900" />)
-            ) : (
-              news?.map(item => (
+            {news?.map(item => (
                 <div key={item.id} className="group cursor-pointer">
                   <div className="relative aspect-[16/10] overflow-hidden mb-4 rounded-lg">
                     <img 
@@ -129,8 +175,7 @@ export default function Home() {
                     {item.summary}
                   </p>
                 </div>
-              ))
-            )}
+              ))}
           </div>
         </div>
       </section>
@@ -144,10 +189,7 @@ export default function Home() {
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {loadingMatches ? (
-              [1, 2].map(i => <Skeleton key={i} className="h-32 w-full bg-zinc-800" />)
-            ) : (
-              upcomingMatches.map(match => (
+            {upcomingMatches.map(match => (
                 <Card key={match.id} className="bg-zinc-800/50 border-zinc-700/50 text-white hover:bg-zinc-800 transition-colors">
                   <CardContent className="p-6 flex items-center justify-between">
                     <div className="flex flex-col">
@@ -178,8 +220,7 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
-              ))
-            )}
+              ))}
           </div>
         </div>
       </section>
